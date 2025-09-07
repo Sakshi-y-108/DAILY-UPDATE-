@@ -1,1 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Updates</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 450px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    input, textarea, select, button {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    .updates {
+      margin-top: 20px;
+    }
+    .update-item {
+      background: #f9f9f9;
+      padding: 10px;
+      border-left: 4px solid #4CAF50;
+      margin-bottom: 10px;
+      border-radius: 6px;
+    }
+    .date {
+      font-size: 12px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Daily Update</h2>
+    <form id="updateForm">
+      <input type="text" id="empName" placeholder="Employee Name" required>
+      <input type="date" id="date" required>
+      <select id="department" required>
+        <option value="">Select Department</option>
+        <option value="Digital Marketing">Digital Marketing</option>
+        <option value="Account">Account</option>
+        <option value="Production">Production</option>
+        <option value="Purchase">Purchase</option>
+        <option value="Sales">Sales</option>
+        <option value="Dispatch">Dispatch</option>
+      </select>
+      <textarea id="updateBox" rows="3" placeholder="Write your update..." required></textarea>
+      <textarea id="questionBox" rows="3" placeholder="Any questions?" required></textarea>
+      <button type="submit">Add Entry</button>
+    </form>
+
+    <div class="updates" id="updates"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById("updateForm");
+    const updatesDiv = document.getElementById("updates");
+
+    // Load saved updates from localStorage
+    let updates = JSON.parse(localStorage.getItem("updates")) || [];
+
+    function renderUpdates() {
+      updatesDiv.innerHTML = "";
+      updates.forEach((update) => {
+        const div = document.createElement("div");
+        div.className = "update-item";
+        div.innerHTML = `
+          <strong>${update.empName}</strong> (${update.department})<br>
+          <span class="date">${update.date}</span>
+          <p><b>Update:</b> ${update.updateText}</p>
+          <p><b>Question:</b> ${update.questionText}</p>
+        `;
+        updatesDiv.appendChild(div);
+      });
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const empName = document.getElementById("empName").value;
+      const date = document.getElementById("date").value;
+      const department = document.getElementById("department").value;
+      const updateText = document.getElementById("updateBox").value;
+      const questionText = document.getElementById("questionBox").value;
+
+      const newUpdate = {
+        empName,
+        date,
+        department,
+        updateText,
+        questionText
+      };
+
+      updates.unshift(newUpdate); // add latest on top
+      localStorage.setItem("updates", JSON.stringify(updates));
+
+      renderUpdates();
+      form.reset();
+    });
+
+    // Initial render
+    renderUpdates();
+  </script>
+</body>
+</html>
 
